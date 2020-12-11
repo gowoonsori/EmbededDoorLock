@@ -1,6 +1,3 @@
-/* FPGA Text LCD Test Application
-File : fpga_test_text_lcd.c*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -129,7 +126,7 @@ int openDevice(int *devPushSwitch, int *devLed, int *devFnd, int *devBuzzer)
 void closeDevice(int *devPushSwitch, int *devLed, int *devFnd, int *devBuzzer)
 {
     close(devPushSwitch);
-    close(devLed;
+    close(devLed);
     close(devFnd);
     close(devBuzzer);
 }
