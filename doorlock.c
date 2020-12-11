@@ -1,0 +1,60 @@
+/* FPGA Text LCD Test Application
+File : fpga_test_text_lcd.c*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+
+#define MAX_DIGIT 4  //fnd
+#define MAX_BUTTON 9 //push button
+#define LED_DEVICE "/dev/fpga_led"
+#define FND_DEVICE "/dev/fpga_fnd"
+#define PUSH_SWITCH_DEVICE "/dev/fpga_push_switch"
+#define BUZZER_DEVICE "/dev/fpga_buzzer"
+
+unsigned char quit = 0;
+
+void user_signal1(int sig)
+{
+    quit = 1;
+}
+
+int main(void)
+{
+    int i;
+    int dev;
+    int buff_size;
+
+    unsigned char push_sw_buff[MAX_BUTTON];
+
+    dev = open("/dev/fpga_push_switch", O_RDWR);
+
+    if (dev < 0)
+    {
+        printf("Device Open Error\n");
+        close(dev);
+        return -1;
+    }
+
+    (void)signal(SIGINT, user_signal1);
+
+    buff_size = sizeof(push_sw_buff);
+    printf("Press <ctrl+c> to quit. \n");
+    while (!quit)
+    {
+        usleep(400000);
+        read(dev, &push_sw_buff, buff_size);
+
+        for (i = 0; i < MAX_BUTTON; i++)
+        {
+            printf("[%d] ", push_sw_buff[i]);
+        }
+        printf("\n");
+    }
+    close(dev);
+}
